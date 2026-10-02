@@ -1,0 +1,15 @@
+{
+  "id": "embervault.mod-manager",
+  "name": "Mod Manager",
+  "version": "0.1.0",
+  "publisher": "EmberVault",
+  "minimum_core_version": "1.0.0",
+  "capabilities": ["mods.install", "mods.enable", "mods.disable", "mods.inspect"],
+  "feature_state": "experimental",
+  "process_mode": "embedded",
+  "entrypoint": "src/module.py",
+  "contract_version": 1,
+  "safety": {"read_only": false, "requires_backup": true, "allowed_profiles": ["default", "research"]},
+  "recovery": {"rollback": "Restore the prior profile package state and remove only EmberVault-managed deployment files.", "verification": "Confirm package manifest, profile state, and managed deployment marker before mutation."},
+  "operation_types": ["mod-inspection", "mod-install", "mod-enable", "mod-disable"]
+}

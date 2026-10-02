@@ -1,0 +1,1 @@
+"""EmberVault Mod Manager module."""
