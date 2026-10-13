@@ -79,6 +79,7 @@ def migrate_passport(passport: dict) -> ModuleResult:
     if passport.get("passport_version", 0) not in {0, None}:
         return ModuleResult("blocked", "Unsupported Passport version.")
     migrated = dict(passport)
+    synthesized = [field for field in ("builds", "targets", "files", "dependencies", "evidence", "provenance", "read_only", "runtime_approval") if field not in passport]
     migrated["passport_version"] = 1
     migrated.setdefault("builds", list(migrated.pop("compatibility_builds", [])))
     migrated.setdefault("targets", list(migrated.pop("compatibility_targets", [])))
@@ -89,11 +90,13 @@ def migrate_passport(passport: dict) -> ModuleResult:
     migrated.setdefault("read_only", True)
     migrated.setdefault("runtime_approval", False)
     validation = validate_passport(ModuleContext(MODULE_ID, "migration", "passport-migration"), migrated)
+    issues = list(validation.data["issues"])
+    issues.extend(f"migrated-default:{field}" for field in synthesized)
     return ModuleResult("ready", "Legacy Passport migration completed.", {
         "passport": migrated,
         "migrated": True,
-        "validation_state": validation.data["state"],
-        "issues": validation.data["issues"],
+        "validation_state": "review-required" if issues else validation.data["state"],
+        "issues": issues,
     })
 
 
