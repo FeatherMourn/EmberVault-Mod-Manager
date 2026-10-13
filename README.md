@@ -1,10 +1,15 @@
 # EmberVault Mod Manager
 
 The Mod Manager is an independently packaged, embedded EmberVault module for
-profile-scoped mod inspection and state planning. Control Center remains the
-authority that performs installation, enablement, deployment, and recovery.
+Passport-driven, profile-scoped mod research and review. It inventories and
+searches supplied package metadata, reviews build and client/server target
+compatibility, checks declared dependencies and hashes, creates plan-only
+update previews, consumes Save Manager backup evidence, summarizes
+Troubleshooter recovery history, and prepares a Control Center approval view.
 
-The first release is deliberately contract-first: module operations return
-validated plans and never mutate saves. Actual package changes must go through
-Control Center's package service and operation/audit system.
+The first release is deliberately contract-first and read-only. All operations
+return deterministic metadata or review payloads and never install, enable,
+disable, update, execute, repair, or mutate saves. Runtime behavior remains
+unverified. Any future package change must be separately approved and go
+through Control Center's package service and operation/audit system.
 Mod Manager For EmberVault
