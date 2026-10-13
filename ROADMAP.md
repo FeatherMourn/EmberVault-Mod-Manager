@@ -23,6 +23,7 @@ saves, or live game files.
 - Multi-record catalog loading with selectable rows and valid/partial/review-required states
 - Selected-record compatibility, integrity, backup, recovery, and approval states derived dynamically
 - Review-state filters, evidence/dependency/hash warnings, and plan-only update preview messaging
+- Plan-only comparison details for versions, hashes, dependencies, builds, targets, evidence, and backup gates
 
 ## Deferred and gated
 
