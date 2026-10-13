@@ -1,7 +1,7 @@
 import unittest
 
 from embervault_sdk import ModuleContext
-from src.module import assess_compatibility, inspect_package, inventory_packages, plan_profile_change, review_package_integrity
+from src.module import assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity
 
 
 class ModManagerTests(unittest.TestCase):
@@ -63,6 +63,16 @@ class ModManagerTests(unittest.TestCase):
         self.assertEqual(result.data["unresolved_dependencies"], ["missing.mod"])
         self.assertEqual(result.data["integrity_state"], "review-required")
         self.assertFalse(result.data["reads_package_files"])
+
+    def test_update_preview_is_plan_only_and_requires_matching_identity(self):
+        context = ModuleContext("embervault.mod-manager", "default", "EV-OP-8")
+        current = {"id": "demo.mod", "version": "1.0", "sha256": "a"}
+        candidate = {"id": "demo.mod", "version": "1.1", "sha256": "b"}
+        result = preview_update(context, current, candidate)
+        self.assertTrue(result.data["update_available"])
+        self.assertTrue(result.data["plan_only"])
+        self.assertFalse(result.data["executed"])
+        self.assertEqual(preview_update(context, current, {"id": "other.mod", "version": "1.1"}).status, "blocked")
 
 
 if __name__ == "__main__":

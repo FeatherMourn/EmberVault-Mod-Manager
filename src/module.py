@@ -150,6 +150,33 @@ def review_package_integrity(
     })
 
 
+def preview_update(context: ModuleContext, current: dict, candidate: dict) -> ModuleResult:
+    """Create a deterministic, non-executable update preview from two metadata records."""
+    if not _valid_context(context):
+        return ModuleResult("blocked", "Mod Manager received an invalid module context.")
+    if not isinstance(current, dict) or not isinstance(candidate, dict):
+        return ModuleResult("blocked", "Update preview requires current and candidate metadata.")
+    if _text(current.get("id")) != _text(candidate.get("id")):
+        return ModuleResult("blocked", "Current and candidate package ids must match.")
+    changed = {
+        key: {"current": current.get(key), "candidate": candidate.get(key)}
+        for key in ("version", "sha256", "builds", "targets", "dependencies")
+        if current.get(key) != candidate.get(key)
+    }
+    return ModuleResult("ready", "Plan-only update preview created.", {
+        "package_id": _text(current.get("id")),
+        "current_version": _text(current.get("version")),
+        "candidate_version": _text(candidate.get("version")),
+        "changed_fields": changed,
+        "update_available": bool(changed),
+        "plan_only": True,
+        "executed": False,
+        "installed": False,
+        "read_only": True,
+        "mutates_workspace": False,
+    })
+
+
 def describe() -> dict:
     return {"id": MODULE_ID, "execution": "embedded", "application_state": "profile-scoped", "mutates_saves": False}
 
