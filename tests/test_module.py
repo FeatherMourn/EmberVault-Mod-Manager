@@ -195,7 +195,7 @@ class ModManagerTests(unittest.TestCase):
         self.assertEqual({record["review_state"] for record in records}, {"valid", "partial", "review-required"})
         self.assertIn("save_evidence", records[0])
         self.assertIn("troubleshooter_history", records[0])
-        self.assertEqual(len(records[0]["timeline"]), 6)
+        self.assertEqual(len(records[0]["timeline"]), 8)
 
     def test_ui_exposes_evidence_timeline(self):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")

@@ -21,9 +21,11 @@ def load_fixture() -> list[dict]:
             "troubleshooter_history": {"report_count": 1, "recovery_state": "ready" if case == "valid" else "review-required"},
             "timeline": [
                 {"kind": "provenance", "summary": "Source metadata recorded"},
+                {"kind": "source-change", "summary": "Source and build scope recorded"},
                 {"kind": "integrity", "summary": "SHA-256 and dependency review recorded"},
                 {"kind": "compatibility", "summary": "Build and target compatibility reviewed"},
                 {"kind": "evidence", "summary": "Evidence state: " + ("valid" if case == "valid" else "review-required")},
+                {"kind": "contradiction", "summary": "No contradiction supplied" if case == "valid" else "Contradiction history remains review-required"},
                 {"kind": "recovery", "summary": "Save Manager and Troubleshooter evidence supplied"},
                 {"kind": "preview", "summary": "Update preview remains plan-only"},
             ],
