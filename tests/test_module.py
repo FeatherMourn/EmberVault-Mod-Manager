@@ -142,6 +142,13 @@ class ModManagerTests(unittest.TestCase):
         self.assertNotIn("execute", preview.data)
         self.assertNotIn("install", inventory.data)
 
+    def test_standalone_review_ui_is_packaged_and_has_no_mutation_controls(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        self.assertIn("Passport research workspace", ui)
+        self.assertIn("READ-ONLY", ui)
+        for forbidden in ("Install", "Enable", "Disable", "Update", "Restore"):
+            self.assertNotIn("text: \"" + forbidden + "\"", ui)
+
 
 if __name__ == "__main__":
     unittest.main()

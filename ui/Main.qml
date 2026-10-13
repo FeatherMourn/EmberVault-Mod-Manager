@@ -1,0 +1,58 @@
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+
+ApplicationWindow {
+    visible: true
+    width: 1120
+    height: 720
+    title: "EmberVault Mod Manager"
+    color: "#0d0c14"
+
+    property color ink: "#edeaf4"
+    property color muted: "#918da4"
+    property color ember: "#ef8b4d"
+    property var packageRecords: []
+
+    ColumnLayout {
+        anchors.fill: parent
+        anchors.margins: 32
+        spacing: 16
+        Text { text: "MOD MANAGER"; color: ember; font.pixelSize: 11; font.letterSpacing: 1.4 }
+        Text { text: "Passport research workspace"; color: ink; font.pixelSize: 30; font.bold: true }
+        Text { text: "Offline-first, read-only review. Package actions, runtime hooks, and live-game operations are disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+        RowLayout {
+            Layout.fillWidth: true
+            TextField { id: search; placeholderText: "Search package, build, target, or dependency"; Layout.fillWidth: true }
+            Label { text: "READ-ONLY"; color: ember }
+        }
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Rectangle {
+                Layout.fillWidth: true; Layout.fillHeight: true; color: "#15141e"; radius: 8
+                ColumnLayout {
+                    anchors.fill: parent; anchors.margins: 16
+                    Text { text: "Passport inventory"; color: ink; font.bold: true; font.pixelSize: 18 }
+                    Text { text: packageRecords.length === 0 ? "Supply Passport metadata to begin review." : packageRecords.length + " records"; color: muted }
+                    ListView { Layout.fillWidth: true; Layout.fillHeight: true; model: packageRecords; delegate: Text { text: modelData.package_id + " · " + modelData.version; color: ink } }
+                }
+            }
+            Rectangle {
+                Layout.preferredWidth: 360; Layout.fillHeight: true; color: "#15141e"; radius: 8
+                ColumnLayout {
+                    anchors.fill: parent; anchors.margins: 16; spacing: 10
+                    Text { text: "Review status"; color: ink; font.bold: true; font.pixelSize: 18 }
+                    Text { text: "Compatibility: supplied metadata"; color: muted }
+                    Text { text: "Integrity: hashes and dependencies"; color: muted }
+                    Text { text: "Evidence: provenance and limitations"; color: muted }
+                    Text { text: "Save Manager: backup readiness"; color: muted }
+                    Text { text: "Troubleshooter: recovery history"; color: muted }
+                    Text { text: "Control Center: approval not granted"; color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Item { Layout.fillHeight: true }
+                    Text { text: "No install, enable, disable, update, or runtime actions are available."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                }
+            }
+        }
+    }
+}
