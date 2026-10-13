@@ -24,6 +24,7 @@ saves, or live game files.
 - Selected-record compatibility, integrity, backup, recovery, and approval states derived dynamically
 - Review-state filters, evidence/dependency/hash warnings, and plan-only update preview messaging
 - Plan-only comparison details for versions, hashes, dependencies, builds, targets, evidence, and backup gates
+- Supplied Save Manager backup and Troubleshooter recovery evidence bound to selected records
 
 ## Deferred and gated
 
