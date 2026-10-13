@@ -14,10 +14,10 @@ saves, or live game files.
 - Troubleshooter recovery-history summaries
 - Control Center approval-display payloads with approval disabled
 - CI checks for tests and read-only manifest capabilities
+- Control Center read-only review adapter, UI component, and smoke workflow
 
 ## Deferred and gated
 
-- Cross-repository consumer integration checks
 - Richer Passport schema validation and migration fixtures
 - Installation, enable/disable, update execution, and runtime hooks
 - Save mutation, live-game testing, and public publication
