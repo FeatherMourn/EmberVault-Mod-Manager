@@ -10,5 +10,8 @@ dependencies = [
   "embervault-module-sdk @ git+https://github.com/FeatherMourn/EmberVault-Module-SDK.git"
 ]
 
+[project.optional-dependencies]
+ui = ["PySide6>=6.6"]
+
 [tool.setuptools.packages.find]
 include = ["src*"]
