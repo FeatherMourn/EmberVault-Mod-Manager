@@ -1,10 +1,33 @@
+import json
 import unittest
+from pathlib import Path
 
 from embervault_sdk import ModuleContext
-from src.module import approval_display, assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history
+from src.module import approval_display, assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history, validate_passport
 
 
 class ModManagerTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.passports = json.loads((Path(__file__).parent / "fixtures" / "passports.json").read_text(encoding="utf-8"))
+
+    def test_passport_fixtures_validate_read_only_contract(self):
+        context = ModuleContext("embervault.mod-manager", "research", "EV-PASS-1")
+        valid = validate_passport(context, self.passports["valid"])
+        self.assertEqual(valid.data["state"], "valid")
+        for name in ("incomplete", "malformed"):
+            result = validate_passport(context, self.passports[name])
+            self.assertEqual(result.data["state"], "review-required")
+            self.assertTrue(result.data["issues"])
+
+    def test_passport_edge_fixtures_preserve_evidence_states_and_builds(self):
+        context = ModuleContext("embervault.mod-manager", "research", "EV-PASS-2")
+        for name in ("contradictory", "unresolved", "cross_build"):
+            result = validate_passport(context, self.passports[name])
+            self.assertEqual(result.status, "ready")
+            self.assertEqual(result.data["passport_version"], 1)
+            self.assertTrue(result.data["read_only"])
+            self.assertFalse(result.data["execution_requested"])
     def test_inspection_is_read_only(self):
         result = inspect_package(ModuleContext("embervault.mod-manager", "default", "EV-OP-1"),
                                  {"id": "demo.mod", "version": "1.0.0"})

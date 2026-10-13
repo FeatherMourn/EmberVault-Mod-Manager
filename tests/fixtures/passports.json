@@ -1,0 +1,14 @@
+{
+  "valid": {
+    "passport_version": 1, "id": "demo.mod", "version": "1.0.0",
+    "builds": ["1076226"], "targets": ["client", "dedicated-server"],
+    "files": [{"path": "mod.json", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"}],
+    "dependencies": [], "evidence": [{"id": "offline-docs", "state": "observed"}],
+    "provenance": {"source": "synthetic-fixture"}, "read_only": true, "runtime_approval": false
+  },
+  "incomplete": {"passport_version": 1, "id": "incomplete.mod", "version": "1.0.0", "read_only": true, "runtime_approval": false},
+  "malformed": {"passport_version": 1, "id": "bad.mod", "version": "1.0.0", "builds": "1076226", "targets": [], "files": [{"path": "mod.json", "sha256": "bad"}], "dependencies": {}, "evidence": [], "provenance": {}, "read_only": false, "runtime_approval": true},
+  "contradictory": {"passport_version": 1, "id": "contradictory.mod", "version": "1.0.0", "builds": ["1076226"], "targets": ["client"], "files": [], "dependencies": [], "evidence": [{"id": "a", "state": "observed"}, {"id": "a", "state": "contradicted"}], "provenance": {"source": "fixture"}, "read_only": true, "runtime_approval": false},
+  "unresolved": {"passport_version": 1, "id": "unresolved.mod", "version": "1.0.0", "builds": ["old-build"], "targets": ["client"], "files": [], "dependencies": ["missing.mod"], "evidence": [{"id": "unknown", "state": "unverified"}], "provenance": {"source": "fixture"}, "read_only": true, "runtime_approval": false},
+  "cross_build": {"passport_version": 1, "id": "cross-build.mod", "version": "1.0.0", "builds": ["1076226", "1077000"], "targets": ["client", "dedicated-server"], "files": [], "dependencies": [], "evidence": [{"id": "build-diff", "state": "partial"}], "provenance": {"source": "fixture"}, "read_only": true, "runtime_approval": false}
+}

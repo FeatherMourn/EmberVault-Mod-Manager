@@ -6,6 +6,7 @@ from embervault_sdk import ModuleContext, ModuleResult
 
 MODULE_ID = "embervault.mod-manager"
 _SHA256 = re.compile(r"^[0-9a-fA-F]{64}$")
+_PASSPORT_FIELDS = ("id", "version", "builds", "targets", "files", "dependencies", "evidence", "provenance")
 
 
 def _valid_context(context: ModuleContext) -> bool:
@@ -23,6 +24,49 @@ def _values(package: dict, key: str) -> list[str]:
     if not isinstance(value, (list, tuple, set)):
         return []
     return sorted({_text(item) for item in value if _text(item)})
+
+
+def validate_passport(context: ModuleContext, passport: dict) -> ModuleResult:
+    """Validate a version-one Passport without reading package files or runtime state."""
+    if not _valid_context(context):
+        return ModuleResult("blocked", "Mod Manager received an invalid module context.")
+    if not isinstance(passport, dict):
+        return ModuleResult("blocked", "Passport must be a metadata object.")
+    if passport.get("passport_version") != 1:
+        return ModuleResult("blocked", "Only Passport version 1 is supported.")
+    issues = [f"missing:{field}" for field in _PASSPORT_FIELDS if field not in passport]
+    if passport.get("read_only") is not True:
+        issues.append("read_only must be true")
+    if passport.get("runtime_approval") is not False:
+        issues.append("runtime_approval must be false")
+    if not isinstance(passport.get("builds"), list) or not passport.get("builds"):
+        issues.append("builds must be a non-empty list")
+    if not isinstance(passport.get("targets"), list) or not passport.get("targets"):
+        issues.append("targets must be a non-empty list")
+    files = passport.get("files", [])
+    if not isinstance(files, list):
+        issues.append("files must be a list")
+    else:
+        for index, item in enumerate(files):
+            if not isinstance(item, dict) or not _text(item.get("path")):
+                issues.append(f"file[{index}] missing path")
+            elif not _SHA256.fullmatch(_text(item.get("sha256"))):
+                issues.append(f"file[{index}] invalid sha256")
+    for field in ("dependencies", "evidence"):
+        if not isinstance(passport.get(field), list):
+            issues.append(f"{field} must be a list")
+    if not isinstance(passport.get("provenance"), dict) or not passport.get("provenance"):
+        issues.append("provenance must be a non-empty object")
+    state = "valid" if not issues else "review-required"
+    return ModuleResult("ready", "Passport validation completed.", {
+        "passport_version": 1,
+        "package_id": _text(passport.get("id")) or "unknown",
+        "state": state,
+        "issues": issues,
+        "read_only": True,
+        "runtime_behavior": "unverified",
+        "execution_requested": False,
+    })
 
 
 def inventory_packages(
