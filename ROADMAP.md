@@ -25,6 +25,7 @@ saves, or live game files.
 - Review-state filters, evidence/dependency/hash warnings, and plan-only update preview messaging
 - Plan-only comparison details for versions, hashes, dependencies, builds, targets, evidence, and backup gates
 - Supplied Save Manager backup and Troubleshooter recovery evidence bound to selected records
+- Read-only evidence timeline covering provenance, source changes, integrity, compatibility, contradictions, recovery, and plan previews
 
 ## Deferred and gated
 
