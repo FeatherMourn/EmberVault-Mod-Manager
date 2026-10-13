@@ -9,7 +9,12 @@ def load_fixture() -> list[dict]:
     fixture = Path(__file__).parents[1] / "tests" / "fixtures" / "passports.json"
     records = json.loads(fixture.read_text(encoding="utf-8"))
     valid = records["valid"]
-    return [{"package_id": valid["id"], "version": valid["version"]}]
+    return [{
+        "package_id": valid["id"], "version": valid["version"],
+        "builds": valid["builds"], "targets": valid["targets"],
+        "dependencies": valid["dependencies"], "files": valid["files"],
+        "provenance": valid["provenance"], "evidence": valid["evidence"],
+    }]
 
 
 def main() -> int:

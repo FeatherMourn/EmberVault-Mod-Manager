@@ -176,6 +176,12 @@ class ModManagerTests(unittest.TestCase):
         self.assertEqual(records[0]["package_id"], "demo.mod")
         self.assertIn("passportFixture", (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8"))
 
+    def test_ui_exposes_deterministic_search_and_filter_bindings(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        for marker in ("refreshResults", "buildFilter", "targetFilter", "filteredRecords", "selectedRecord"):
+            self.assertIn(marker, ui)
+        self.assertIn("JSON.stringify(record)", ui)
+
 
 if __name__ == "__main__":
     unittest.main()

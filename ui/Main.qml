@@ -13,6 +13,8 @@ ApplicationWindow {
     property color muted: "#918da4"
     property color ember: "#ef8b4d"
     property var packageRecords: passportFixture || []
+    property var filteredRecords: packageRecords
+    property var selectedRecord: filteredRecords.length > 0 ? filteredRecords[0] : ({})
     property string compatibilityState: "unknown"
     property string integrityState: "unknown"
     property string backupReadiness: "unknown"
@@ -28,7 +30,9 @@ ApplicationWindow {
         Text { text: "Offline-first, read-only review. Package actions, runtime hooks, and live-game operations are disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
         RowLayout {
             Layout.fillWidth: true
-            TextField { id: search; placeholderText: "Search package, build, target, or dependency"; Layout.fillWidth: true }
+            TextField { id: search; placeholderText: "Search package, build, target, or dependency"; Layout.fillWidth: true; onTextChanged: refreshResults() }
+            ComboBox { id: buildFilter; model: ["All builds", "1076226", "1077000"]; onActivated: refreshResults() }
+            ComboBox { id: targetFilter; model: ["All targets", "client", "dedicated-server"]; onActivated: refreshResults() }
             Label { text: "READ-ONLY"; color: ember }
         }
         RowLayout {
@@ -40,7 +44,7 @@ ApplicationWindow {
                     anchors.fill: parent; anchors.margins: 16
                     Text { text: "Passport inventory"; color: ink; font.bold: true; font.pixelSize: 18 }
                     Text { text: packageRecords.length === 0 ? "Supply Passport metadata to begin review." : packageRecords.length + " records"; color: muted }
-                    ListView { Layout.fillWidth: true; Layout.fillHeight: true; model: packageRecords; delegate: Text { text: modelData.package_id + " · " + modelData.version; color: ink } }
+                    ListView { Layout.fillWidth: true; Layout.fillHeight: true; model: filteredRecords; delegate: Text { text: modelData.package_id + " · " + modelData.version; color: ink } }
                 }
             }
             Rectangle {
@@ -48,6 +52,7 @@ ApplicationWindow {
                 ColumnLayout {
                     anchors.fill: parent; anchors.margins: 16; spacing: 10
                     Text { text: "Review status"; color: ink; font.bold: true; font.pixelSize: 18 }
+                    Text { text: "Selected: " + (selectedRecord.package_id || "none"); color: ink }
                     Text { text: "Compatibility: " + compatibilityState; color: muted }
                     Text { text: "Integrity: " + integrityState; color: muted }
                     Text { text: "Evidence: provenance and limitations"; color: muted }
@@ -59,5 +64,18 @@ ApplicationWindow {
                 }
             }
         }
+    }
+
+    function refreshResults() {
+        var query = search.text.toLowerCase()
+        var build = buildFilter.currentText === "All builds" ? "" : buildFilter.currentText
+        var target = targetFilter.currentText === "All targets" ? "" : targetFilter.currentText
+        filteredRecords = packageRecords.filter(function (record) {
+            var haystack = JSON.stringify(record).toLowerCase()
+            return (!query || haystack.indexOf(query) >= 0) &&
+                   (!build || (record.builds || []).indexOf(build) >= 0) &&
+                   (!target || (record.targets || []).indexOf(target) >= 0)
+        })
+        selectedRecord = filteredRecords.length > 0 ? filteredRecords[0] : ({})
     }
 }
