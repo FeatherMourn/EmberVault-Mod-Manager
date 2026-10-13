@@ -204,6 +204,11 @@ class ModManagerTests(unittest.TestCase):
         for marker in ("stateFilter", "selectedWarnings", "Evidence requires review", "Update preview: plan-only", "review-required"):
             self.assertIn(marker, ui)
 
+    def test_ui_exposes_plan_only_update_details(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        for marker in ("candidate_version", "Changed fields", "Backup required", "execution disabled"):
+            self.assertIn(marker, ui)
+
 
 if __name__ == "__main__":
     unittest.main()
