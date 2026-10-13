@@ -224,6 +224,11 @@ class ModManagerTests(unittest.TestCase):
             self.assertFalse(written["public"])
             self.assertEqual(written["actions"], [])
 
+    def test_ui_exposes_local_dossier_status(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        self.assertIn("Local review dossier", ui)
+        self.assertIn("public export disabled", ui)
+
     def test_ui_derives_selected_review_states(self):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
         for marker in ("deriveCompatibility", "deriveIntegrity", "selectedRecord.review_state", "backupReadiness", "recoverySummary"):

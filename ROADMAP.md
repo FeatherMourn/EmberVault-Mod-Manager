@@ -26,6 +26,7 @@ saves, or live game files.
 - Plan-only comparison details for versions, hashes, dependencies, builds, targets, evidence, and backup gates
 - Supplied Save Manager backup and Troubleshooter recovery evidence bound to selected records
 - Read-only evidence timeline covering provenance, source changes, integrity, compatibility, contradictions, recovery, and plan previews
+- Sanitized local JSON review dossier export with public export disabled
 
 ## Deferred and gated
 

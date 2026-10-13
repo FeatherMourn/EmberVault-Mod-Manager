@@ -77,6 +77,7 @@ ApplicationWindow {
                     Text { text: "Control Center: approval " + (approvalGranted ? "granted" : "not granted"); color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: selectedWarnings(selectedRecord); color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Update preview: plan-only; execution disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Local review dossier: sanitized JSON; public export disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Current: " + (selectedRecord.version || "unknown") + " → Candidate: " + (selectedRecord.candidate_version || "none"); color: ink; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Changed fields: " + (selectedRecord.candidate_version && selectedRecord.candidate_version !== selectedRecord.version ? "version" : "none"); color: muted; Layout.fillWidth: true }
                     Text { text: "Hash comparison: " + ((selectedRecord.files || []).length > 0 ? "current supplied; candidate review required" : "missing"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
