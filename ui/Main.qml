@@ -84,6 +84,8 @@ ApplicationWindow {
                     Text { text: "Build/target compatibility: " + (selectedRecord.review_state === "valid" ? "no regression indicated" : "review required"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Evidence regression: " + (selectedRecord.review_state === "valid" ? "none supplied" : "unresolved evidence state"); color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Backup required before any future approved operation: " + (selectedRecord.review_state === "valid" ? "yes" : "review first"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Evidence timeline"; color: ink; font.bold: true; Layout.topMargin: 6 }
+                    Repeater { model: selectedRecord.timeline || []; delegate: Text { text: "· " + modelData.kind + ": " + modelData.summary; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true } }
                     Item { Layout.fillHeight: true }
                     Text { text: "No install, enable, disable, update, or runtime actions are available."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                 }
