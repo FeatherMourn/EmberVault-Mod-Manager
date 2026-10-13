@@ -1,0 +1,28 @@
+name: Mod Manager CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install module SDK
+        run: python -m pip install "embervault-module-sdk @ git+https://github.com/FeatherMourn/EmberVault-Module-SDK.git"
+      - name: Run Mod Manager tests
+        run: python -m unittest -v tests/test_module.py
+      - name: Verify read-only manifest
+        run: |
+          python - <<'PY'
+          import json
+          manifest = json.load(open("module.json", encoding="utf-8"))
+          assert manifest["safety"]["read_only"] is True
+          assert all(not any(word in capability for word in ("install", "enable", "disable", "update"))
+                     for capability in manifest["capabilities"])
+          assert manifest["operation_types"] == ["mod-inspection", "mod-search", "mod-compatibility-review"]
+          PY
