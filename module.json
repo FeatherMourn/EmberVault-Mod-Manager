@@ -10,6 +10,6 @@
   "entrypoint": "src/module.py",
   "contract_version": 1,
   "safety": {"read_only": true, "requires_backup": false, "allowed_profiles": ["default", "research"]},
-  "recovery": {"rollback": "Restore the prior profile package state and remove only EmberVault-managed deployment files.", "verification": "Confirm package manifest, profile state, and managed deployment marker before mutation."},
+  "recovery": {"rollback": "Deferred: no package mutation is available in the read-only module.", "verification": "Review supplied backup and recovery evidence from Save Manager."},
   "operation_types": ["mod-inspection", "mod-search", "mod-compatibility-review"]
 }
