@@ -20,6 +20,7 @@ saves, or live game files.
 - Controlled launcher with checked-in Passport fixture loading and explicit missing-Qt failure behavior
 - PySide6 optional binding documented; offscreen smoke test enabled where available
 - Functional query, build, and target filtering with selected Passport detail display
+- Multi-record catalog loading with selectable rows and valid/partial/review-required states
 
 ## Deferred and gated
 
