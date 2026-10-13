@@ -170,6 +170,12 @@ class ModManagerTests(unittest.TestCase):
             self.assertIn(binding, ui)
         self.assertIn("No install, enable, disable, update, or runtime actions", ui)
 
+    def test_launcher_loads_checked_in_fixture_without_mutation(self):
+        from src.launcher import load_fixture
+        records = load_fixture()
+        self.assertEqual(records[0]["package_id"], "demo.mod")
+        self.assertIn("passportFixture", (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8"))
+
 
 if __name__ == "__main__":
     unittest.main()

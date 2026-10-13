@@ -12,7 +12,7 @@ ApplicationWindow {
     property color ink: "#edeaf4"
     property color muted: "#918da4"
     property color ember: "#ef8b4d"
-    property var packageRecords: []
+    property var packageRecords: passportFixture || []
     property string compatibilityState: "unknown"
     property string integrityState: "unknown"
     property string backupReadiness: "unknown"

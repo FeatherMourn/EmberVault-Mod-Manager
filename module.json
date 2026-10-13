@@ -9,6 +9,7 @@
   "process_mode": "embedded",
   "entrypoint": "src/module.py",
   "application_entrypoint": "ui/Main.qml",
+  "launcher": "src/launcher.py",
   "contract_version": 1,
   "safety": {"read_only": true, "requires_backup": false, "allowed_profiles": ["default", "research"]},
   "recovery": {"rollback": "Deferred: no package mutation is available in the read-only module.", "verification": "Review supplied backup and recovery evidence from Save Manager."},
