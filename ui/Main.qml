@@ -15,10 +15,10 @@ ApplicationWindow {
     property var packageRecords: passportFixture || []
     property var filteredRecords: packageRecords
     property var selectedRecord: filteredRecords.length > 0 ? filteredRecords[0] : ({})
-    property string compatibilityState: "unknown"
-    property string integrityState: "unknown"
-    property string backupReadiness: "unknown"
-    property string recoverySummary: "No recovery history supplied."
+    property string compatibilityState: deriveCompatibility(selectedRecord)
+    property string integrityState: deriveIntegrity(selectedRecord)
+    property string backupReadiness: selectedRecord.review_state === "valid" ? "ready" : "review-required"
+    property string recoverySummary: selectedRecord.review_state === "valid" ? "No recovery gaps supplied." : "Review recovery evidence before approval."
     property bool approvalGranted: false
 
     ColumnLayout {
@@ -91,5 +91,17 @@ ApplicationWindow {
                    (!target || (record.targets || []).indexOf(target) >= 0)
         })
         selectedRecord = filteredRecords.length > 0 ? filteredRecords[0] : ({})
+    }
+
+    function deriveCompatibility(record) {
+        if (!record || !record.builds || !record.targets || record.builds.length === 0 || record.targets.length === 0)
+            return "unknown"
+        return record.review_state === "valid" ? "verified" : (record.review_state === "partial" ? "partial" : "review-required")
+    }
+
+    function deriveIntegrity(record) {
+        if (!record || !record.files || record.files.length === 0) return "not supplied"
+        var digest = record.files[0].sha256 || ""
+        return digest.length === 64 ? (record.review_state === "valid" ? "verified" : "review-required") : "invalid"
     }
 }

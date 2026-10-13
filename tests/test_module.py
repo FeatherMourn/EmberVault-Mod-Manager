@@ -194,6 +194,11 @@ class ModManagerTests(unittest.TestCase):
         self.assertEqual(len(records), 6)
         self.assertEqual({record["review_state"] for record in records}, {"valid", "partial", "review-required"})
 
+    def test_ui_derives_selected_review_states(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        for marker in ("deriveCompatibility", "deriveIntegrity", "selectedRecord.review_state", "backupReadiness", "recoverySummary"):
+            self.assertIn(marker, ui)
+
 
 if __name__ == "__main__":
     unittest.main()
