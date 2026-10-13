@@ -22,6 +22,7 @@ saves, or live game files.
 - Functional query, build, and target filtering with selected Passport detail display
 - Multi-record catalog loading with selectable rows and valid/partial/review-required states
 - Selected-record compatibility, integrity, backup, recovery, and approval states derived dynamically
+- Review-state filters, evidence/dependency/hash warnings, and plan-only update preview messaging
 
 ## Deferred and gated
 
