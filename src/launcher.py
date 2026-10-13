@@ -17,6 +17,8 @@ def load_fixture() -> list[dict]:
             "provenance": passport.get("provenance", {}), "evidence": passport.get("evidence", []),
             "review_state": "valid" if case == "valid" else ("partial" if case == "cross_build" else "review-required"),
             "candidate_version": (passport.get("version", "unknown") + ".candidate") if case == "valid" else passport.get("version", "unknown"),
+            "save_evidence": {"backup_readiness": "ready" if case == "valid" else "review-required", "rollback_readiness": "ready" if case == "valid" else "unknown"},
+            "troubleshooter_history": {"report_count": 1, "recovery_state": "ready" if case == "valid" else "review-required"},
         })
     return output
 

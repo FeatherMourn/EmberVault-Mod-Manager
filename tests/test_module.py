@@ -193,6 +193,8 @@ class ModManagerTests(unittest.TestCase):
         records = load_fixture()
         self.assertEqual(len(records), 6)
         self.assertEqual({record["review_state"] for record in records}, {"valid", "partial", "review-required"})
+        self.assertIn("save_evidence", records[0])
+        self.assertIn("troubleshooter_history", records[0])
 
     def test_ui_derives_selected_review_states(self):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")

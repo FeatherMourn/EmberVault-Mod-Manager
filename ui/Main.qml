@@ -17,8 +17,8 @@ ApplicationWindow {
     property var selectedRecord: filteredRecords.length > 0 ? filteredRecords[0] : ({})
     property string compatibilityState: deriveCompatibility(selectedRecord)
     property string integrityState: deriveIntegrity(selectedRecord)
-    property string backupReadiness: selectedRecord.review_state === "valid" ? "ready" : "review-required"
-    property string recoverySummary: selectedRecord.review_state === "valid" ? "No recovery gaps supplied." : "Review recovery evidence before approval."
+    property string backupReadiness: selectedRecord.save_evidence ? selectedRecord.save_evidence.backup_readiness : "unknown"
+    property string recoverySummary: selectedRecord.troubleshooter_history ? selectedRecord.troubleshooter_history.recovery_state + " · reports: " + selectedRecord.troubleshooter_history.report_count : "No recovery history supplied."
     property bool approvalGranted: false
 
     ColumnLayout {
@@ -68,6 +68,7 @@ ApplicationWindow {
                     Text { text: "SHA-256: " + ((selectedRecord.files || []).length > 0 ? selectedRecord.files[0].sha256 : "not supplied"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Provenance: " + JSON.stringify(selectedRecord.provenance || {}); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Evidence: " + JSON.stringify(selectedRecord.evidence || []); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Provenance preserved: " + ((selectedRecord.provenance || {}).source || "not supplied"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Compatibility: " + compatibilityState; color: muted }
                     Text { text: "Integrity: " + integrityState; color: muted }
                     Text { text: "Evidence: provenance and limitations"; color: muted }
