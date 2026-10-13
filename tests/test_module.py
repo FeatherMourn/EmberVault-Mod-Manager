@@ -188,6 +188,12 @@ class ModManagerTests(unittest.TestCase):
                       "selectedRecord.files", "selectedRecord.provenance", "selectedRecord.evidence"):
             self.assertIn(field, ui)
 
+    def test_launcher_loads_all_review_fixture_cases(self):
+        from src.launcher import load_fixture
+        records = load_fixture()
+        self.assertEqual(len(records), 6)
+        self.assertEqual({record["review_state"] for record in records}, {"valid", "partial", "review-required"})
+
 
 if __name__ == "__main__":
     unittest.main()

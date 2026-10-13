@@ -19,7 +19,7 @@ class QtSmokeTests(unittest.TestCase):
         self.assertTrue(engine.rootObjects())
         QTimer.singleShot(0, app.quit)
         app.exec()
-        self.assertEqual(len(load_fixture()), 1)
+        self.assertEqual(len(load_fixture()), 6)
 
 
 if __name__ == "__main__":

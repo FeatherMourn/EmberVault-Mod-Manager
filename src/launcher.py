@@ -8,13 +8,16 @@ from pathlib import Path
 def load_fixture() -> list[dict]:
     fixture = Path(__file__).parents[1] / "tests" / "fixtures" / "passports.json"
     records = json.loads(fixture.read_text(encoding="utf-8"))
-    valid = records["valid"]
-    return [{
-        "package_id": valid["id"], "version": valid["version"],
-        "builds": valid["builds"], "targets": valid["targets"],
-        "dependencies": valid["dependencies"], "files": valid["files"],
-        "provenance": valid["provenance"], "evidence": valid["evidence"],
-    }]
+    output = []
+    for case, passport in records.items():
+        output.append({
+            "package_id": passport.get("id", case), "version": passport.get("version", "unknown"),
+            "builds": passport.get("builds", []), "targets": passport.get("targets", []),
+            "dependencies": passport.get("dependencies", []), "files": passport.get("files", []),
+            "provenance": passport.get("provenance", {}), "evidence": passport.get("evidence", []),
+            "review_state": "valid" if case == "valid" else ("partial" if case == "cross_build" else "review-required"),
+        })
+    return output
 
 
 def main() -> int:

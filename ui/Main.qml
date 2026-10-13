@@ -44,7 +44,14 @@ ApplicationWindow {
                     anchors.fill: parent; anchors.margins: 16
                     Text { text: "Passport inventory"; color: ink; font.bold: true; font.pixelSize: 18 }
                     Text { text: packageRecords.length === 0 ? "Supply Passport metadata to begin review." : packageRecords.length + " records"; color: muted }
-                    ListView { Layout.fillWidth: true; Layout.fillHeight: true; model: filteredRecords; delegate: Text { text: modelData.package_id + " · " + modelData.version; color: ink } }
+                    ListView {
+                        Layout.fillWidth: true; Layout.fillHeight: true; model: filteredRecords
+                        delegate: Rectangle {
+                            width: ListView.view.width; height: 42; color: modelData === selectedRecord ? "#25202d" : "transparent"
+                            Text { anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter; text: modelData.package_id + " · " + modelData.version + " · " + modelData.review_state; color: ink }
+                            MouseArea { anchors.fill: parent; onClicked: selectedRecord = modelData }
+                        }
+                    }
                 }
             }
             Rectangle {
@@ -53,6 +60,7 @@ ApplicationWindow {
                     anchors.fill: parent; anchors.margins: 16; spacing: 10
                     Text { text: "Review status"; color: ink; font.bold: true; font.pixelSize: 18 }
                     Text { text: "Selected: " + (selectedRecord.package_id || "none"); color: ink }
+                    Text { text: "Review state: " + (selectedRecord.review_state || "unknown"); color: ember }
                     Text { text: "Builds: " + (selectedRecord.builds || []).join(", "); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Targets: " + (selectedRecord.targets || []).join(", "); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Dependencies: " + (selectedRecord.dependencies || []).join(", ") || "none"; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
