@@ -164,6 +164,12 @@ class ModManagerTests(unittest.TestCase):
         self.assertFalse(snapshot["approval_granted"])
         self.assertEqual(snapshot["actions"], [])
 
+    def test_ui_binds_snapshot_review_fields_without_actions(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        for binding in ("packageRecords", "compatibilityState", "integrityState", "backupReadiness", "recoverySummary", "approvalGranted"):
+            self.assertIn(binding, ui)
+        self.assertIn("No install, enable, disable, update, or runtime actions", ui)
+
 
 if __name__ == "__main__":
     unittest.main()

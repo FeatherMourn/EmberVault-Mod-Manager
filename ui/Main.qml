@@ -13,6 +13,11 @@ ApplicationWindow {
     property color muted: "#918da4"
     property color ember: "#ef8b4d"
     property var packageRecords: []
+    property string compatibilityState: "unknown"
+    property string integrityState: "unknown"
+    property string backupReadiness: "unknown"
+    property string recoverySummary: "No recovery history supplied."
+    property bool approvalGranted: false
 
     ColumnLayout {
         anchors.fill: parent
@@ -43,12 +48,12 @@ ApplicationWindow {
                 ColumnLayout {
                     anchors.fill: parent; anchors.margins: 16; spacing: 10
                     Text { text: "Review status"; color: ink; font.bold: true; font.pixelSize: 18 }
-                    Text { text: "Compatibility: supplied metadata"; color: muted }
-                    Text { text: "Integrity: hashes and dependencies"; color: muted }
+                    Text { text: "Compatibility: " + compatibilityState; color: muted }
+                    Text { text: "Integrity: " + integrityState; color: muted }
                     Text { text: "Evidence: provenance and limitations"; color: muted }
-                    Text { text: "Save Manager: backup readiness"; color: muted }
-                    Text { text: "Troubleshooter: recovery history"; color: muted }
-                    Text { text: "Control Center: approval not granted"; color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Save Manager: " + backupReadiness; color: muted }
+                    Text { text: "Troubleshooter: " + recoverySummary; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Control Center: approval " + (approvalGranted ? "granted" : "not granted"); color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Item { Layout.fillHeight: true }
                     Text { text: "No install, enable, disable, update, or runtime actions are available."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                 }
