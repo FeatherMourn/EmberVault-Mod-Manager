@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from embervault_sdk import ModuleContext
-from src.module import approval_display, assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, migrate_passport, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history, validate_passport
+from src.module import approval_display, assess_backup_readiness, assess_compatibility, build_interface_snapshot, inspect_package, inventory_packages, migrate_passport, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history, validate_passport
 
 
 class ModManagerTests(unittest.TestCase):
@@ -148,6 +148,21 @@ class ModManagerTests(unittest.TestCase):
         self.assertIn("READ-ONLY", ui)
         for forbidden in ("Install", "Enable", "Disable", "Update", "Restore"):
             self.assertNotIn("text: \"" + forbidden + "\"", ui)
+
+    def test_interface_snapshot_is_sanitized_and_plan_only(self):
+        snapshot = build_interface_snapshot(
+            {"id": "demo.mod", "version": "1.0.0"},
+            {"compatibility_state": "partial"},
+            {"integrity_state": "review-required", "sha256": "a" * 64},
+            {"backup_readiness": "ready"},
+            {"report_count": 2},
+        )
+        self.assertEqual(snapshot["package"]["package_id"], "demo.mod")
+        self.assertEqual(snapshot["backup_readiness"], "ready")
+        self.assertTrue(snapshot["read_only"])
+        self.assertTrue(snapshot["plan_only"])
+        self.assertFalse(snapshot["approval_granted"])
+        self.assertEqual(snapshot["actions"], [])
 
 
 if __name__ == "__main__":

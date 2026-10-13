@@ -100,6 +100,31 @@ def migrate_passport(passport: dict) -> ModuleResult:
     })
 
 
+def build_interface_snapshot(
+    passport: dict,
+    compatibility: dict | None = None,
+    integrity: dict | None = None,
+    backup_readiness: dict | None = None,
+    recovery_history: dict | None = None,
+) -> dict:
+    """Build the sanitized data shape consumed by the standalone review UI."""
+    if not isinstance(passport, dict) or not _text(passport.get("id")):
+        raise ValueError("Interface snapshot requires a Passport identity.")
+    return {
+        "contract_version": 1,
+        "package": {"package_id": _text(passport["id"]), "version": _text(passport.get("version"))},
+        "inventory": [{"package_id": _text(passport["id"]), "version": _text(passport.get("version"))}],
+        "compatibility": dict(compatibility or {}),
+        "integrity": dict(integrity or {}),
+        "backup_readiness": _text((backup_readiness or {}).get("backup_readiness")) or "unknown",
+        "recovery_history": dict(recovery_history or {}),
+        "approval_granted": False,
+        "plan_only": True,
+        "read_only": True,
+        "actions": [],
+    }
+
+
 def inventory_packages(
     context: ModuleContext,
     packages: list[dict],
