@@ -236,6 +236,8 @@ def approval_display(context: ModuleContext, package: dict, compatibility_state:
     }
     review_required = any(value != "verified" and value != "ready" for value in gates.values())
     return ModuleResult("ready", "Control Center approval display prepared.", {
+        "contract_version": 1,
+        "package": {"package_id": _text(package.get("id")), "version": _text(package.get("version"))},
         "package_id": _text(package.get("id")),
         "version": _text(package.get("version")),
         "gates": gates,

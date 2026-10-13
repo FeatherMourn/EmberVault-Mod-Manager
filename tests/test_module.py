@@ -96,6 +96,8 @@ class ModManagerTests(unittest.TestCase):
         result = approval_display(ModuleContext("embervault.mod-manager", "default", "EV-OP-11"),
                                   {"id": "demo.mod", "version": "1"}, "partial", "ready")
         self.assertTrue(result.data["review_required"])
+        self.assertEqual(result.data["contract_version"], 1)
+        self.assertEqual(result.data["package"]["package_id"], "demo.mod")
         self.assertFalse(result.data["approval_granted"])
         self.assertFalse(result.data["execution_requested"])
 
