@@ -33,6 +33,25 @@ def load_fixture() -> list[dict]:
     return output
 
 
+def load_history_fixture() -> list[dict]:
+    """Return sanitized local snapshots for the read-only history review."""
+    return [
+        {
+            "label": "Initial review",
+            "package_id": "demo.mod",
+            "timeline": [{"kind": "evidence", "summary": "Initial donor evidence recorded"}],
+        },
+        {
+            "label": "Follow-up review",
+            "package_id": "demo.mod",
+            "timeline": [
+                {"kind": "evidence", "summary": "Initial donor evidence recorded"},
+                {"kind": "compatibility", "summary": "Target compatibility reviewed"},
+            ],
+        },
+    ]
+
+
 def main() -> int:
     try:
         from PySide6.QtCore import QUrl
@@ -43,6 +62,7 @@ def main() -> int:
     app = QApplication([])
     engine = QQmlApplicationEngine()
     engine.rootContext().setContextProperty("passportFixture", load_fixture())
+    engine.rootContext().setContextProperty("historyFixture", load_history_fixture())
     engine.load(QUrl.fromLocalFile(str(Path(__file__).parents[1] / "ui" / "Main.qml")))
     if not engine.rootObjects():
         return 1

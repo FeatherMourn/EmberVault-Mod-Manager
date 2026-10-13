@@ -248,6 +248,18 @@ class ModManagerTests(unittest.TestCase):
         self.assertIn("historyComparison", ui)
         self.assertIn("Dossier history", ui)
 
+    def test_launcher_exposes_local_history_fixture(self):
+        from src.launcher import load_history_fixture
+        history = load_history_fixture()
+        self.assertEqual(len(history), 2)
+        self.assertEqual(history[0]["label"], "Initial review")
+        self.assertEqual(history[1]["label"], "Follow-up review")
+
+    def test_ui_exposes_interactive_history_controls(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        for marker in ("dossierHistory", "previousHistory", "currentHistory", "Comparison:"):
+            self.assertIn(marker, ui)
+
     def test_ui_derives_selected_review_states(self):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
         for marker in ("deriveCompatibility", "deriveIntegrity", "selectedRecord.review_state", "backupReadiness", "recoverySummary"):

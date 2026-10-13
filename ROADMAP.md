@@ -28,6 +28,7 @@ saves, or live game files.
 - Read-only evidence timeline covering provenance, source changes, integrity, compatibility, contradictions, recovery, and plan previews
 - Sanitized local JSON review dossier export with public export disabled
 - Local private dossier history with new/resolved/changed comparison summary
+- Interactive local history snapshot selectors and comparison summary in the standalone UI
 
 ## Deferred and gated
 

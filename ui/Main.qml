@@ -15,6 +15,9 @@ ApplicationWindow {
     property var packageRecords: passportFixture || []
     property var filteredRecords: packageRecords
     property var selectedRecord: filteredRecords.length > 0 ? filteredRecords[0] : ({})
+    property var dossierHistory: historyFixture || []
+    property var previousDossier: dossierHistory.length > 0 ? dossierHistory[0] : ({})
+    property var currentDossier: dossierHistory.length > 1 ? dossierHistory[1] : ({})
     property string compatibilityState: deriveCompatibility(selectedRecord)
     property string integrityState: deriveIntegrity(selectedRecord)
     property string backupReadiness: selectedRecord.save_evidence ? selectedRecord.save_evidence.backup_readiness : "unknown"
@@ -80,6 +83,12 @@ ApplicationWindow {
                     Text { text: "Update preview: plan-only; execution disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Local review dossier: sanitized JSON; public export disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Dossier history: new " + historyComparison.new_evidence.length + " · resolved " + historyComparison.resolved_evidence.length + " · changed " + Object.keys(historyComparison.changed_fields).length; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        ComboBox { id: previousHistory; model: dossierHistory; textRole: "label"; Layout.fillWidth: true }
+                        ComboBox { id: currentHistory; model: dossierHistory; textRole: "label"; currentIndex: dossierHistory.length > 1 ? 1 : 0; Layout.fillWidth: true }
+                    }
+                    Text { text: "Comparison: " + (previousHistory.currentText || "none") + " → " + (currentHistory.currentText || "none"); color: ink; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Current: " + (selectedRecord.version || "unknown") + " → Candidate: " + (selectedRecord.candidate_version || "none"); color: ink; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Changed fields: " + (selectedRecord.candidate_version && selectedRecord.candidate_version !== selectedRecord.version ? "version" : "none"); color: muted; Layout.fillWidth: true }
                     Text { text: "Hash comparison: " + ((selectedRecord.files || []).length > 0 ? "current supplied; candidate review required" : "missing"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
