@@ -1,7 +1,7 @@
 import unittest
 
 from embervault_sdk import ModuleContext
-from src.module import assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history
+from src.module import approval_display, assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history
 
 
 class ModManagerTests(unittest.TestCase):
@@ -91,6 +91,13 @@ class ModManagerTests(unittest.TestCase):
         self.assertEqual(result.data["recovery_states"]["ready"], 2)
         self.assertEqual(result.data["recovery_states"]["blocked"], 1)
         self.assertFalse(result.data["repairs_performed"])
+
+    def test_approval_display_never_grants_or_executes(self):
+        result = approval_display(ModuleContext("embervault.mod-manager", "default", "EV-OP-11"),
+                                  {"id": "demo.mod", "version": "1"}, "partial", "ready")
+        self.assertTrue(result.data["review_required"])
+        self.assertFalse(result.data["approval_granted"])
+        self.assertFalse(result.data["execution_requested"])
 
 
 if __name__ == "__main__":

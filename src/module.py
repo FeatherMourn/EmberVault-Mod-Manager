@@ -224,6 +224,28 @@ def summarize_recovery_history(context: ModuleContext, reports: list[dict]) -> M
     })
 
 
+def approval_display(context: ModuleContext, package: dict, compatibility_state: str, backup_readiness: str) -> ModuleResult:
+    """Prepare a Control Center review payload; this never grants approval."""
+    if not _valid_context(context):
+        return ModuleResult("blocked", "Mod Manager received an invalid module context.")
+    if not isinstance(package, dict) or not _text(package.get("id")):
+        return ModuleResult("blocked", "Approval display requires a package identity.")
+    gates = {
+        "compatibility": compatibility_state,
+        "backup_readiness": backup_readiness,
+    }
+    review_required = any(value != "verified" and value != "ready" for value in gates.values())
+    return ModuleResult("ready", "Control Center approval display prepared.", {
+        "package_id": _text(package.get("id")),
+        "version": _text(package.get("version")),
+        "gates": gates,
+        "review_required": review_required,
+        "approval_granted": False,
+        "execution_requested": False,
+        "read_only": True,
+    })
+
+
 def describe() -> dict:
     return {"id": MODULE_ID, "execution": "embedded", "application_state": "profile-scoped", "mutates_saves": False}
 
