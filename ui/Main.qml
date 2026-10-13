@@ -78,6 +78,10 @@ ApplicationWindow {
                     Text { text: "Update preview: plan-only; execution disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Current: " + (selectedRecord.version || "unknown") + " → Candidate: " + (selectedRecord.candidate_version || "none"); color: ink; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Changed fields: " + (selectedRecord.candidate_version && selectedRecord.candidate_version !== selectedRecord.version ? "version" : "none"); color: muted; Layout.fillWidth: true }
+                    Text { text: "Hash comparison: " + ((selectedRecord.files || []).length > 0 ? "current supplied; candidate review required" : "missing"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Dependencies: " + ((selectedRecord.dependencies || []).length > 0 ? selectedRecord.dependencies.join(", ") : "none"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Build/target compatibility: " + (selectedRecord.review_state === "valid" ? "no regression indicated" : "review required"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Evidence regression: " + (selectedRecord.review_state === "valid" ? "none supplied" : "unresolved evidence state"); color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Backup required before any future approved operation: " + (selectedRecord.review_state === "valid" ? "yes" : "review first"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Item { Layout.fillHeight: true }
                     Text { text: "No install, enable, disable, update, or runtime actions are available."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
