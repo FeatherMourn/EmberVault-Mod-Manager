@@ -15,6 +15,7 @@ saves, or live game files.
 - Control Center approval-display payloads with approval disabled
 - CI checks for tests and read-only manifest capabilities
 - Control Center read-only review adapter, UI component, and smoke workflow
+- Standalone QML review shell and sanitized interface snapshot model
 
 ## Deferred and gated
 
