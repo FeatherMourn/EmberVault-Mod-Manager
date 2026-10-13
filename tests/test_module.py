@@ -99,6 +99,16 @@ class ModManagerTests(unittest.TestCase):
         self.assertFalse(result.data["approval_granted"])
         self.assertFalse(result.data["execution_requested"])
 
+    def test_review_boundaries_expose_safety_fields(self):
+        context = ModuleContext("embervault.mod-manager", "research", "EV-OP-12")
+        inventory = inventory_packages(context, [{"id": "demo.mod", "version": "1"}])
+        preview = preview_update(context, {"id": "demo.mod", "version": "1"}, {"id": "demo.mod", "version": "2"})
+        for result in (inventory, preview):
+            self.assertEqual(result.status, "ready")
+            self.assertTrue(result.data["read_only"])
+        self.assertNotIn("execute", preview.data)
+        self.assertNotIn("install", inventory.data)
+
 
 if __name__ == "__main__":
     unittest.main()
