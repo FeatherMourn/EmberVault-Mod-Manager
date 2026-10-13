@@ -17,6 +17,7 @@ saves, or live game files.
 - Control Center read-only review adapter, UI component, and smoke workflow
 - Standalone QML review shell and sanitized interface snapshot model
 - Snapshot-bound UI fields with structural smoke coverage; native Qt launch remains environment-dependent
+- Controlled launcher with checked-in Passport fixture loading and explicit missing-Qt failure behavior
 
 ## Deferred and gated
 
