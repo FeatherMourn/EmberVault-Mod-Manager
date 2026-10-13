@@ -1,7 +1,7 @@
 import unittest
 
 from embervault_sdk import ModuleContext
-from src.module import assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity
+from src.module import assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity
 
 
 class ModManagerTests(unittest.TestCase):
@@ -73,6 +73,15 @@ class ModManagerTests(unittest.TestCase):
         self.assertTrue(result.data["plan_only"])
         self.assertFalse(result.data["executed"])
         self.assertEqual(preview_update(context, current, {"id": "other.mod", "version": "1.1"}).status, "blocked")
+
+    def test_backup_readiness_consumes_save_manager_evidence_only(self):
+        context = ModuleContext("embervault.mod-manager", "default", "EV-OP-9")
+        result = assess_backup_readiness(context, {
+            "source_state": "ready", "backup_state": "verified", "rollback_readiness": "ready",
+        })
+        self.assertEqual(result.data["backup_readiness"], "ready")
+        self.assertFalse(result.data["save_operations_performed"])
+        self.assertFalse(result.data["mutates_saves"])
 
 
 if __name__ == "__main__":

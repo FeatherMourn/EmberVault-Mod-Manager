@@ -177,6 +177,32 @@ def preview_update(context: ModuleContext, current: dict, candidate: dict) -> Mo
     })
 
 
+def assess_backup_readiness(context: ModuleContext, save_evidence: dict) -> ModuleResult:
+    """Consume Save Manager evidence without opening, copying, or changing saves."""
+    if not _valid_context(context):
+        return ModuleResult("blocked", "Mod Manager received an invalid module context.")
+    if not isinstance(save_evidence, dict):
+        return ModuleResult("blocked", "Save Manager evidence must be a metadata record.")
+    source = _text(save_evidence.get("source_state", save_evidence.get("status")))
+    backup = _text(save_evidence.get("backup_state"))
+    recovery = _text(save_evidence.get("rollback_readiness"))
+    if source == "ready" and backup in {"ready", "verified"} and recovery in {"ready", "verified"}:
+        state = "ready"
+    elif source in {"blocked", "unsupported"} or backup in {"blocked", "unsupported"}:
+        state = "blocked"
+    else:
+        state = "review-required"
+    return ModuleResult("ready", "Save Manager backup readiness reviewed.", {
+        "backup_readiness": state,
+        "source_state": source or "unknown",
+        "backup_state": backup or "unknown",
+        "rollback_readiness": recovery or "unknown",
+        "save_operations_performed": False,
+        "read_only": True,
+        "mutates_saves": False,
+    })
+
+
 def describe() -> dict:
     return {"id": MODULE_ID, "execution": "embedded", "application_state": "profile-scoped", "mutates_saves": False}
 
