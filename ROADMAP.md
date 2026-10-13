@@ -16,6 +16,7 @@ saves, or live game files.
 - CI checks for tests and read-only manifest capabilities
 - Control Center read-only review adapter, UI component, and smoke workflow
 - Standalone QML review shell and sanitized interface snapshot model
+- Snapshot-bound UI fields with structural smoke coverage; native Qt launch remains environment-dependent
 
 ## Deferred and gated
 
