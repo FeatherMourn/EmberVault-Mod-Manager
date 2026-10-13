@@ -18,6 +18,8 @@ jobs:
         run: python -m unittest -v tests/test_module.py
       - name: Verify standalone UI structure
         run: python -m unittest -v tests.test_module.ModManagerTests.test_ui_binds_snapshot_review_fields_without_actions
+      - name: Verify controlled launcher fixture loading
+        run: python -m unittest -v tests.test_module.ModManagerTests.test_launcher_loads_checked_in_fixture_without_mutation
       - name: Verify read-only manifest
         run: |
           python - <<'PY'
