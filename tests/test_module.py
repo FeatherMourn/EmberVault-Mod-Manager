@@ -199,6 +199,11 @@ class ModManagerTests(unittest.TestCase):
         for marker in ("deriveCompatibility", "deriveIntegrity", "selectedRecord.review_state", "backupReadiness", "recoverySummary"):
             self.assertIn(marker, ui)
 
+    def test_ui_exposes_review_filters_warnings_and_plan_preview(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        for marker in ("stateFilter", "selectedWarnings", "Evidence requires review", "Update preview: plan-only", "review-required"):
+            self.assertIn(marker, ui)
+
 
 if __name__ == "__main__":
     unittest.main()

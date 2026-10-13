@@ -33,6 +33,7 @@ ApplicationWindow {
             TextField { id: search; placeholderText: "Search package, build, target, or dependency"; Layout.fillWidth: true; onTextChanged: refreshResults() }
             ComboBox { id: buildFilter; model: ["All builds", "1076226", "1077000"]; onActivated: refreshResults() }
             ComboBox { id: targetFilter; model: ["All targets", "client", "dedicated-server"]; onActivated: refreshResults() }
+            ComboBox { id: stateFilter; model: ["All states", "valid", "partial", "review-required"]; onActivated: refreshResults() }
             Label { text: "READ-ONLY"; color: ember }
         }
         RowLayout {
@@ -73,6 +74,8 @@ ApplicationWindow {
                     Text { text: "Save Manager: " + backupReadiness; color: muted }
                     Text { text: "Troubleshooter: " + recoverySummary; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Control Center: approval " + (approvalGranted ? "granted" : "not granted"); color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: selectedWarnings(selectedRecord); color: ember; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Update preview: plan-only; execution disabled."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Item { Layout.fillHeight: true }
                     Text { text: "No install, enable, disable, update, or runtime actions are available."; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                 }
@@ -88,7 +91,8 @@ ApplicationWindow {
             var haystack = JSON.stringify(record).toLowerCase()
             return (!query || haystack.indexOf(query) >= 0) &&
                    (!build || (record.builds || []).indexOf(build) >= 0) &&
-                   (!target || (record.targets || []).indexOf(target) >= 0)
+                   (!target || (record.targets || []).indexOf(target) >= 0) &&
+                   (stateFilter.currentText === "All states" || record.review_state === stateFilter.currentText)
         })
         selectedRecord = filteredRecords.length > 0 ? filteredRecords[0] : ({})
     }
@@ -103,5 +107,14 @@ ApplicationWindow {
         if (!record || !record.files || record.files.length === 0) return "not supplied"
         var digest = record.files[0].sha256 || ""
         return digest.length === 64 ? (record.review_state === "valid" ? "verified" : "review-required") : "invalid"
+    }
+
+    function selectedWarnings(record) {
+        if (!record || !record.package_id) return "No record selected."
+        var warnings = []
+        if (record.review_state !== "valid") warnings.push("Evidence requires review: " + record.review_state)
+        if ((record.dependencies || []).length > 0) warnings.push("Dependency declarations require verification.")
+        if ((record.files || []).length === 0) warnings.push("No hashed package files supplied.")
+        return warnings.length > 0 ? warnings.join(" ") : "No review warnings for supplied metadata."
     }
 }
