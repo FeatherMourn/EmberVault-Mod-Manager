@@ -27,6 +27,7 @@ saves, or live game files.
 - Supplied Save Manager backup and Troubleshooter recovery evidence bound to selected records
 - Read-only evidence timeline covering provenance, source changes, integrity, compatibility, contradictions, recovery, and plan previews
 - Sanitized local JSON review dossier export with public export disabled
+- Local private dossier history with new/resolved/changed comparison summary
 
 ## Deferred and gated
 
