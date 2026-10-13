@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import re
+
 from embervault_sdk import ModuleContext, ModuleResult
 
 MODULE_ID = "embervault.mod-manager"
+_SHA256 = re.compile(r"^[0-9a-fA-F]{64}$")
 
 
 def _valid_context(context: ModuleContext) -> bool:
@@ -108,6 +111,42 @@ def assess_compatibility(
         "runtime_behavior": "unverified",
         "read_only": True,
         "mutates_workspace": False,
+    })
+
+
+def review_package_integrity(
+    context: ModuleContext,
+    package: dict,
+    dependency_catalog: list[dict] | None = None,
+) -> ModuleResult:
+    """Review supplied dependency declarations and hashes without opening package files."""
+    if not _valid_context(context):
+        return ModuleResult("blocked", "Mod Manager received an invalid module context.")
+    if not isinstance(package, dict) or not _text(package.get("id")) or not _text(package.get("version")):
+        return ModuleResult("blocked", "A package record must provide an id and version.")
+    known = {
+        (_text(item.get("id")), _text(item.get("version")))
+        for item in (dependency_catalog or [])
+        if isinstance(item, dict) and _text(item.get("id")) and _text(item.get("version"))
+    }
+    dependencies = _values(package, "dependencies")
+    resolved = sorted(item for item in dependencies if any(identity == item for identity, _ in known))
+    unresolved = sorted(item for item in dependencies if item not in resolved)
+    digest = _text(package.get("sha256"))
+    hash_state = "valid" if _SHA256.fullmatch(digest) else ("missing" if not digest else "invalid")
+    state = "verified" if hash_state == "valid" and not unresolved else "review-required"
+    return ModuleResult("ready", "Package dependency and hash review completed.", {
+        "package_id": _text(package["id"]),
+        "version": _text(package["version"]),
+        "hash_state": hash_state,
+        "sha256": digest,
+        "dependencies": dependencies,
+        "resolved_dependencies": resolved,
+        "unresolved_dependencies": unresolved,
+        "integrity_state": state,
+        "read_only": True,
+        "mutates_workspace": False,
+        "reads_package_files": False,
     })
 
 

@@ -1,7 +1,7 @@
 import unittest
 
 from embervault_sdk import ModuleContext
-from src.module import assess_compatibility, inspect_package, inventory_packages, plan_profile_change
+from src.module import assess_compatibility, inspect_package, inventory_packages, plan_profile_change, review_package_integrity
 
 
 class ModManagerTests(unittest.TestCase):
@@ -49,6 +49,20 @@ class ModManagerTests(unittest.TestCase):
         self.assertEqual(partial.data["compatibility_state"], "partial")
         self.assertEqual(unknown.data["compatibility_state"], "unknown")
         self.assertEqual(verified.data["runtime_behavior"], "unverified")
+
+    def test_integrity_review_validates_hash_and_dependencies_without_file_reads(self):
+        context = ModuleContext("embervault.mod-manager", "default", "EV-OP-7")
+        digest = "a" * 64
+        result = review_package_integrity(context, {
+            "id": "demo.mod", "version": "1", "sha256": digest,
+            "dependencies": ["base.mod", "missing.mod"],
+        }, [{"id": "base.mod", "version": "1"}])
+        self.assertEqual(result.status, "ready")
+        self.assertEqual(result.data["hash_state"], "valid")
+        self.assertEqual(result.data["resolved_dependencies"], ["base.mod"])
+        self.assertEqual(result.data["unresolved_dependencies"], ["missing.mod"])
+        self.assertEqual(result.data["integrity_state"], "review-required")
+        self.assertFalse(result.data["reads_package_files"])
 
 
 if __name__ == "__main__":
