@@ -53,6 +53,12 @@ ApplicationWindow {
                     anchors.fill: parent; anchors.margins: 16; spacing: 10
                     Text { text: "Review status"; color: ink; font.bold: true; font.pixelSize: 18 }
                     Text { text: "Selected: " + (selectedRecord.package_id || "none"); color: ink }
+                    Text { text: "Builds: " + (selectedRecord.builds || []).join(", "); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Targets: " + (selectedRecord.targets || []).join(", "); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Dependencies: " + (selectedRecord.dependencies || []).join(", ") || "none"; color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "SHA-256: " + ((selectedRecord.files || []).length > 0 ? selectedRecord.files[0].sha256 : "not supplied"); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Provenance: " + JSON.stringify(selectedRecord.provenance || {}); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
+                    Text { text: "Evidence: " + JSON.stringify(selectedRecord.evidence || []); color: muted; wrapMode: Text.WordWrap; Layout.fillWidth: true }
                     Text { text: "Compatibility: " + compatibilityState; color: muted }
                     Text { text: "Integrity: " + integrityState; color: muted }
                     Text { text: "Evidence: provenance and limitations"; color: muted }

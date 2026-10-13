@@ -182,6 +182,12 @@ class ModManagerTests(unittest.TestCase):
             self.assertIn(marker, ui)
         self.assertIn("JSON.stringify(record)", ui)
 
+    def test_ui_exposes_selected_passport_detail_fields(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        for field in ("selectedRecord.builds", "selectedRecord.targets", "selectedRecord.dependencies",
+                      "selectedRecord.files", "selectedRecord.provenance", "selectedRecord.evidence"):
+            self.assertIn(field, ui)
+
 
 if __name__ == "__main__":
     unittest.main()
