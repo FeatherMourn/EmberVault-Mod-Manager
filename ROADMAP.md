@@ -19,6 +19,7 @@ saves, or live game files.
 - Snapshot-bound UI fields with structural smoke coverage; native Qt launch remains environment-dependent
 - Controlled launcher with checked-in Passport fixture loading and explicit missing-Qt failure behavior
 - PySide6 optional binding documented; offscreen smoke test enabled where available
+- Functional query, build, and target filtering with selected Passport detail display
 
 ## Deferred and gated
 
