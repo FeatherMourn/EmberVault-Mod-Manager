@@ -203,6 +203,27 @@ def assess_backup_readiness(context: ModuleContext, save_evidence: dict) -> Modu
     })
 
 
+def summarize_recovery_history(context: ModuleContext, reports: list[dict]) -> ModuleResult:
+    """Summarize supplied Troubleshooter reports without repair or recovery actions."""
+    if not _valid_context(context):
+        return ModuleResult("blocked", "Mod Manager received an invalid module context.")
+    if not isinstance(reports, list):
+        return ModuleResult("blocked", "Troubleshooter history must be a list of reports.")
+    summary = {"ready": 0, "review-required": 0, "blocked": 0, "unsupported": 0, "unknown": 0}
+    for report in reports:
+        if not isinstance(report, dict):
+            return ModuleResult("blocked", "Every Troubleshooter report must be metadata.")
+        state = _text(report.get("recovery_state", report.get("status"))) or "unknown"
+        summary[state] = summary.get(state, 0) + 1
+    return ModuleResult("ready", "Troubleshooter recovery history summarized.", {
+        "report_count": len(reports),
+        "recovery_states": summary,
+        "repairs_performed": False,
+        "read_only": True,
+        "mutates_saves": False,
+    })
+
+
 def describe() -> dict:
     return {"id": MODULE_ID, "execution": "embedded", "application_state": "profile-scoped", "mutates_saves": False}
 
