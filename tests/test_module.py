@@ -1,7 +1,7 @@
 import unittest
 
 from embervault_sdk import ModuleContext
-from src.module import inspect_package, inventory_packages, plan_profile_change
+from src.module import assess_compatibility, inspect_package, inventory_packages, plan_profile_change
 
 
 class ModManagerTests(unittest.TestCase):
@@ -38,6 +38,17 @@ class ModManagerTests(unittest.TestCase):
     def test_inventory_rejects_incomplete_records(self):
         result = inventory_packages(ModuleContext("embervault.mod-manager", "default", "EV-OP-5"), [{"id": "missing-version"}])
         self.assertEqual(result.status, "blocked")
+
+    def test_compatibility_distinguishes_verified_partial_and_unknown(self):
+        context = ModuleContext("embervault.mod-manager", "default", "EV-OP-6")
+        package = {"id": "demo.mod", "version": "1", "builds": ["1076226"], "targets": ["client"]}
+        verified = assess_compatibility(context, package, "1076226", "client")
+        partial = assess_compatibility(context, package, "1076226", "dedicated-server")
+        unknown = assess_compatibility(context, {"id": "unknown.mod", "version": "1"}, "1076226", "client")
+        self.assertEqual(verified.data["compatibility_state"], "verified")
+        self.assertEqual(partial.data["compatibility_state"], "partial")
+        self.assertEqual(unknown.data["compatibility_state"], "unknown")
+        self.assertEqual(verified.data["runtime_behavior"], "unverified")
 
 
 if __name__ == "__main__":

@@ -4,12 +4,12 @@
   "version": "0.1.0",
   "publisher": "EmberVault",
   "minimum_core_version": "1.0.0",
-  "capabilities": ["mods.install", "mods.enable", "mods.disable", "mods.inspect"],
+  "capabilities": ["mods.inspect", "mods.search", "mods.compatibility-review"],
   "feature_state": "experimental",
   "process_mode": "embedded",
   "entrypoint": "src/module.py",
   "contract_version": 1,
-  "safety": {"read_only": false, "requires_backup": true, "allowed_profiles": ["default", "research"]},
+  "safety": {"read_only": true, "requires_backup": false, "allowed_profiles": ["default", "research"]},
   "recovery": {"rollback": "Restore the prior profile package state and remove only EmberVault-managed deployment files.", "verification": "Confirm package manifest, profile state, and managed deployment marker before mutation."},
-  "operation_types": ["mod-inspection", "mod-install", "mod-enable", "mod-disable"]
+  "operation_types": ["mod-inspection", "mod-search", "mod-compatibility-review"]
 }

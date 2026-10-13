@@ -74,6 +74,43 @@ def inventory_packages(
     })
 
 
+def assess_compatibility(
+    context: ModuleContext,
+    package: dict,
+    build: str,
+    target: str,
+) -> ModuleResult:
+    """Compare supplied Passport metadata with a requested build and target."""
+    if not _valid_context(context):
+        return ModuleResult("blocked", "Mod Manager received an invalid module context.")
+    if not isinstance(package, dict) or not _text(package.get("id")) or not _text(package.get("version")):
+        return ModuleResult("blocked", "A package record must provide an id and version.")
+    builds = _values(package, "builds") or _values(package, "compatibility_builds")
+    targets = _values(package, "targets") or _values(package, "compatibility_targets")
+    build_known = bool(build.strip()) and build.strip() in builds
+    target_known = bool(target.strip()) and target.strip() in targets
+    if build_known and target_known:
+        state = "verified"
+    elif build_known or target_known:
+        state = "partial"
+    elif builds or targets:
+        state = "blocked"
+    else:
+        state = "unknown"
+    return ModuleResult("ready", "Package compatibility assessed from supplied metadata.", {
+        "package_id": _text(package["id"]),
+        "version": _text(package["version"]),
+        "requested_build": build.strip(),
+        "requested_target": target.strip(),
+        "compatibility_state": state,
+        "known_builds": builds,
+        "known_targets": targets,
+        "runtime_behavior": "unverified",
+        "read_only": True,
+        "mutates_workspace": False,
+    })
+
+
 def describe() -> dict:
     return {"id": MODULE_ID, "execution": "embedded", "application_state": "profile-scoped", "mutates_saves": False}
 
