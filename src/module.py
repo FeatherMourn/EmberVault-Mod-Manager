@@ -263,13 +263,9 @@ def inspect_package(context: ModuleContext, package: dict) -> ModuleResult:
 
 
 def plan_profile_change(context: ModuleContext, package_id: str, enabled: bool) -> ModuleResult:
-    if context.module_id != MODULE_ID or not context.profile_id:
-        return ModuleResult("blocked", "Mod Manager requires a profile-scoped context.")
-    if context.capability_state not in {"plan-only", "approved"}:
-        return ModuleResult("blocked", "Mod Manager requires an approved profile operation.")
-    if not package_id.strip():
-        return ModuleResult("blocked", "A package id is required.")
-    return ModuleResult("ready", "Profile mod state change prepared.", {
-        "package_id": package_id.strip(), "enabled": bool(enabled),
-        "profile_id": context.profile_id, "application_state": "profile-scoped",
+    """Legacy mutation entry point retained only as an explicit safety boundary."""
+    return ModuleResult("blocked", "Profile mod changes are disabled in the read-only Mod Manager.", {
+        "read_only": True,
+        "execution_requested": False,
+        "mutates_workspace": False,
     })
