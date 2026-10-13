@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 
 from embervault_sdk import ModuleContext
-from src.module import approval_display, assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history, validate_passport
+from src.module import approval_display, assess_backup_readiness, assess_compatibility, inspect_package, inventory_packages, migrate_passport, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history, validate_passport
 
 
 class ModManagerTests(unittest.TestCase):
@@ -28,6 +28,14 @@ class ModManagerTests(unittest.TestCase):
             self.assertEqual(result.data["passport_version"], 1)
             self.assertTrue(result.data["read_only"])
             self.assertFalse(result.data["execution_requested"])
+
+    def test_legacy_passport_migration_preserves_identity_and_marks_gaps(self):
+        legacy = {"id": "legacy.mod", "version": "0.9", "compatibility_builds": ["old-build"], "targets": ["client"]}
+        result = migrate_passport(legacy)
+        self.assertTrue(result.data["migrated"])
+        self.assertEqual(result.data["passport"]["id"], "legacy.mod")
+        self.assertEqual(result.data["passport"]["builds"], ["old-build"])
+        self.assertEqual(result.data["validation_state"], "review-required")
     def test_inspection_is_read_only(self):
         result = inspect_package(ModuleContext("embervault.mod-manager", "default", "EV-OP-1"),
                                  {"id": "demo.mod", "version": "1.0.0"})

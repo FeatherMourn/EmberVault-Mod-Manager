@@ -69,6 +69,34 @@ def validate_passport(context: ModuleContext, passport: dict) -> ModuleResult:
     })
 
 
+def migrate_passport(passport: dict) -> ModuleResult:
+    """Upgrade legacy metadata to Passport v1 without inventing evidence."""
+    if not isinstance(passport, dict):
+        return ModuleResult("blocked", "Passport migration requires a metadata object.")
+    if passport.get("passport_version") == 1:
+        migrated = dict(passport)
+        return ModuleResult("ready", "Passport is already version 1.", {"passport": migrated, "migrated": False})
+    if passport.get("passport_version", 0) not in {0, None}:
+        return ModuleResult("blocked", "Unsupported Passport version.")
+    migrated = dict(passport)
+    migrated["passport_version"] = 1
+    migrated.setdefault("builds", list(migrated.pop("compatibility_builds", [])))
+    migrated.setdefault("targets", list(migrated.pop("compatibility_targets", [])))
+    migrated.setdefault("files", list(migrated.pop("package_files", [])))
+    migrated.setdefault("dependencies", list(migrated.get("dependencies", [])))
+    migrated.setdefault("evidence", list(migrated.get("evidence", [])))
+    migrated.setdefault("provenance", {"migration": "legacy-passport"})
+    migrated.setdefault("read_only", True)
+    migrated.setdefault("runtime_approval", False)
+    validation = validate_passport(ModuleContext(MODULE_ID, "migration", "passport-migration"), migrated)
+    return ModuleResult("ready", "Legacy Passport migration completed.", {
+        "passport": migrated,
+        "migrated": True,
+        "validation_state": validation.data["state"],
+        "issues": validation.data["issues"],
+    })
+
+
 def inventory_packages(
     context: ModuleContext,
     packages: list[dict],
