@@ -243,6 +243,11 @@ class ModManagerTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 history.append({"public": True, "approval_granted": False})
 
+    def test_ui_exposes_dossier_history_summary(self):
+        ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
+        self.assertIn("historyComparison", ui)
+        self.assertIn("Dossier history", ui)
+
     def test_ui_derives_selected_review_states(self):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
         for marker in ("deriveCompatibility", "deriveIntegrity", "selectedRecord.review_state", "backupReadiness", "recoverySummary"):
