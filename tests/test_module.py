@@ -229,6 +229,20 @@ class ModManagerTests(unittest.TestCase):
         self.assertIn("Local review dossier", ui)
         self.assertIn("public export disabled", ui)
 
+    def test_local_dossier_history_compares_and_rejects_public_records(self):
+        from src.history import LocalDossierHistory, compare_dossiers
+        previous = {"package": {"package_id": "demo.mod"}, "timeline": [{"kind": "evidence", "summary": "old"}], "public": False, "approval_granted": False}
+        current = {"package": {"package_id": "demo.mod"}, "timeline": [{"kind": "evidence", "summary": "new"}], "public": False, "approval_granted": False}
+        comparison = compare_dossiers(previous, current)
+        self.assertEqual(comparison["package_id"], "demo.mod")
+        self.assertTrue(comparison["new_evidence"])
+        with tempfile.TemporaryDirectory() as root:
+            history = LocalDossierHistory(Path(root) / "history.json")
+            history.append(previous)
+            self.assertEqual(len(history.read()), 1)
+            with self.assertRaises(ValueError):
+                history.append({"public": True, "approval_granted": False})
+
     def test_ui_derives_selected_review_states(self):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
         for marker in ("deriveCompatibility", "deriveIntegrity", "selectedRecord.review_state", "backupReadiness", "recoverySummary"):
