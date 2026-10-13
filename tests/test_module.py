@@ -1,9 +1,10 @@
 import json
+import tempfile
 import unittest
 from pathlib import Path
 
 from embervault_sdk import ModuleContext
-from src.module import approval_display, assess_backup_readiness, assess_compatibility, build_interface_snapshot, inspect_package, inventory_packages, migrate_passport, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history, validate_passport
+from src.module import approval_display, assess_backup_readiness, assess_compatibility, build_interface_snapshot, build_review_dossier, inspect_package, inventory_packages, migrate_passport, plan_profile_change, preview_update, review_package_integrity, summarize_recovery_history, validate_passport
 
 
 class ModManagerTests(unittest.TestCase):
@@ -201,6 +202,27 @@ class ModManagerTests(unittest.TestCase):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")
         self.assertIn("Evidence timeline", ui)
         self.assertIn("selectedRecord.timeline", ui)
+
+    def test_review_dossier_is_sanitized_local_and_non_public(self):
+        dossier = build_review_dossier({
+            "contract_version": 1, "package": {"package_id": "demo.mod", "version": "1"},
+            "inventory": [{"package_id": "demo.mod"}], "timeline": [{"kind": "evidence"}],
+            "backup_readiness": "review-required", "recovery_history": {"report_count": 1},
+        })
+        self.assertEqual(dossier["dossier_version"], 1)
+        self.assertTrue(dossier["plan_only"])
+        self.assertFalse(dossier["approval_granted"])
+        self.assertFalse(dossier["public"])
+        self.assertEqual(dossier["actions"], [])
+
+    def test_dossier_export_writes_only_local_json(self):
+        from src.export import export_dossier
+        with tempfile.TemporaryDirectory() as root:
+            destination = Path(root) / "review.json"
+            output = export_dossier({"contract_version": 1, "package": {"package_id": "demo.mod"}}, destination)
+            written = json.loads(output.read_text(encoding="utf-8"))
+            self.assertFalse(written["public"])
+            self.assertEqual(written["actions"], [])
 
     def test_ui_derives_selected_review_states(self):
         ui = (Path(__file__).parents[1] / "ui" / "Main.qml").read_text(encoding="utf-8")

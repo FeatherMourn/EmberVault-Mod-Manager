@@ -125,6 +125,28 @@ def build_interface_snapshot(
     }
 
 
+def build_review_dossier(snapshot: dict) -> dict:
+    """Create a sanitized local dossier; never includes executable actions or private paths."""
+    if not isinstance(snapshot, dict) or snapshot.get("contract_version") != 1:
+        raise ValueError("Dossier requires a version-one interface snapshot.")
+    package = snapshot.get("package", {})
+    return {
+        "dossier_version": 1,
+        "package": {"package_id": str(package.get("package_id", "unknown")), "version": str(package.get("version", "unknown"))},
+        "inventory": list(snapshot.get("inventory", [])),
+        "compatibility": dict(snapshot.get("compatibility", {})),
+        "integrity": dict(snapshot.get("integrity", {})),
+        "backup_readiness": snapshot.get("backup_readiness", "unknown"),
+        "recovery_history": dict(snapshot.get("recovery_history", {})),
+        "timeline": list(snapshot.get("timeline", [])),
+        "plan_only": True,
+        "approval_granted": False,
+        "actions": [],
+        "public": False,
+        "runtime_approval": False,
+    }
+
+
 def inventory_packages(
     context: ModuleContext,
     packages: list[dict],
